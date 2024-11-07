@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fulldemo_flask_container
+    container_name: fulldemo_flask
     depends_on:
       - mysql
     environment:
@@ -18,7 +18,7 @@ services:
 
   mysql:
     image: mysql:latest
-    container_name: fulldemo_mysql_container
+    container_name: fulldemo_mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: company
@@ -29,7 +29,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: fulldemo_phpmyadmin_container
+    container_name: fulldemo_phpmyadmin
     depends_on:
       - mysql
     environment:
@@ -40,7 +40,7 @@ services:
 
   arangodb:
     image: arangodb:latest
-    container_name: arangodb_container
+    container_name: fulldemo_arangodb
     environment:
       ARANGO_ROOT_PASSWORD: password
     volumes:
@@ -48,8 +48,18 @@ services:
     ports:
       - 8529:8529
 
+
+  redis:
+    image: redis:latest
+    container_name: fulldemo_redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+
 volumes:
   mysql_data:
   arangodb_data:
+  redis_data:
 
 
