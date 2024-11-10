@@ -1,37 +1,51 @@
-import requests
 import os
-from PIL import Image
-from io import BytesIO
+import requests
+import time
 
-# Set up API key and search parameters
-api_key = 'ACCESS_KEY_FROM_UNSPLASH_HERE'
-url = "https://api.unsplash.com/search/photos"
-query_params = {
-    'query': 'avatar',
-    'client_id': api_key,
-    'per_page': 10
+# Unsplash API key
+UNSPLASH_ACCESS_KEY = 'xgOowUdk_g1qhlpDB0bGeceAJJqTqni8nyKcR91uZ9g'
+url = 'https://api.unsplash.com/photos/random'
+headers = {
+    'Authorization': f'Client-ID {UNSPLASH_ACCESS_KEY}'
 }
 
-# Create a folder to save the images
-os.makedirs('avatars', exist_ok=True)
+# Folder to save images
+save_folder = '../images'
+os.makedirs(save_folder, exist_ok=True)
 
-# Make the request to Unsplash API
-response = requests.get(url, params=query_params)
-
-if response.status_code == 200:
-    data = response.json()
-    images = data['results']
-
-    # Download and save images
-    for i, image_data in enumerate(images):
-        image_url = image_data['urls']['small']
-        img_response = requests.get(image_url)
-        
-        if img_response.status_code == 200:
-            img = Image.open(BytesIO(img_response.content))
-            img.save(f"../images/avatar_{i + 1}.jpg")
+def get_random_images(total_images=100, batch_size=30):
+    images = []
+    while len(images) < total_images:
+        count = min(batch_size, total_images - len(images))
+        params = {
+            'count': count
+        }
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code == 200:
+            images.extend(response.json())
         else:
-            print(f"Failed to download image {i + 1}")
-else:
-    print(f"Failed to fetch data: {response.status_code}")
-    print(response.text)
+            print(f"Failed to fetch images: {response.status_code}")
+            break
+        time.sleep(1)  # Respect API rate limits
+    return images[:total_images]
+
+def download_image(image_url, save_path):
+    try:
+        img_data = requests.get(image_url).content
+        with open(save_path, 'wb') as handler:
+            handler.write(img_data)
+        print(f"Downloaded {save_path}")
+    except Exception as e:
+        print(f"Error downloading {image_url}: {e}")
+
+# Fetch 100 random images and download them
+images = get_random_images(100)
+
+for idx, img in enumerate(images):
+    img_url = img['urls']['regular']  # Get the image URL
+    img_name = f"image_{idx + 1}.jpg"
+    save_path = os.path.join(save_folder, img_name)
+    download_image(img_url, save_path)
+
+
+

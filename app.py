@@ -161,7 +161,7 @@ def logout():
 ##############################
 @app.post("/users")
 @x.no_cache
-def create_user():
+def signup():
     try:
         user_name = x.validate_user_name()
         user_last_name = x.validate_user_last_name()
@@ -192,7 +192,7 @@ def create_user():
         ic(ex)
         if "db" in locals(): db.rollback()
         if isinstance(ex, x.CustomException): 
-            toast = render_template("___toast.html", message={ex.message})
+            toast = render_template("___toast.html", message=ex.message)
             return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
         if isinstance(ex, x.mysql.connector.Error):
             ic(ex)
