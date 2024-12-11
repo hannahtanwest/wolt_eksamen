@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fulldemo_flask
+    container_name: wolt_flask
     depends_on:
       - mysql
     environment:
@@ -18,18 +18,18 @@ services:
 
   mysql:
     image: mysql:latest
-    container_name: fulldemo_mysql
+    container_name: wolt_mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: company
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 3307:3306
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: fulldemo_phpmyadmin
+    container_name: wolt_phpmyadmin
     depends_on:
       - mysql
     environment:
@@ -40,7 +40,7 @@ services:
 
   arangodb:
     image: arangodb:latest
-    container_name: fulldemo_arangodb
+    container_name: wolt_arangodb
     environment:
       ARANGO_ROOT_PASSWORD: password
     volumes:
@@ -51,7 +51,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: fulldemo_redis
+    container_name: wolt_redis
     ports:
       - 6379:6379
     volumes:

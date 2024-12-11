@@ -6,6 +6,8 @@ import x
 
 # Define the base URL of the API
 BASE_URL = "http://127.0.0.1"  # Replace with your API base URL
+#BASE_URL = "https://wolteksamen.pythonanywhere.com"  # i pythonanywhere
+
 
 
 def ok(message): print(f"\033[32m{message}\033[0m")
